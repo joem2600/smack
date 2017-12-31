@@ -5,4 +5,19 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="profile_icon_text">Profile icon</string>
+    <string name="login_text">Login</string>
+    <string name="add_chat_channel_text">Add chat channel</string>
+    <string name="please_login_text">Please Login</string>
+    <string name="add_message_text">Add a new message here</string>
+    <string name="send_message_btn_text">Send message</string>
+    <string name="password_text">Password</string>
+    <string name="email_text">Email</string>
+    <string name="dont_have_account_text">Don\'t have an account?</string>
+    <string name="create_new_user_text">Create new user</string>
+    <string name="sign_up_text">Sign up here</string>
+    <string name="user_name_text">User name</string>
+    <string name="tap_to_generate_user_avatar_text">Tap to generate user avatar</string>
+    <string name="generate_bg_color_text">Generate background color</string>
+
 </resources>

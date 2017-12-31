@@ -1,11 +1,13 @@
-package me.joemacdonald.smack
+package me.joemacdonald.smack.Controller
 
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.support.design.widget.Snackbar
 import android.view.View
 import kotlinx.android.synthetic.main.activity_create_user.*
+import me.joemacdonald.smack.R
+import me.joemacdonald.smack.Services.AuthService
 import java.util.*
 
 class CreateUserActivity : AppCompatActivity() {
@@ -48,11 +50,20 @@ class CreateUserActivity : AppCompatActivity() {
         val savedB = r.toDouble() / 255
 
         avatarColour = "[$savedR, $savedG, $savedB]"
-        Log.d("JOEMAC", " myColour $avatarColour")
+
 
     }
 
     fun createUserBtnClicked(view : View) {
+
+        AuthService.registerUser(this, "j@jo.com", "123456") {
+            complete ->
+            if (complete) {
+                Snackbar.make(view, "User registered successfully", Snackbar.LENGTH_LONG)
+            } else {
+                Snackbar.make(view, "User registered failed", Snackbar.LENGTH_LONG)
+            }
+        }
 
     }
 
