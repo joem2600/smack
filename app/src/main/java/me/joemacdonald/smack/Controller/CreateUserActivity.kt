@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_create_user.*
 import me.joemacdonald.smack.R
@@ -56,6 +57,7 @@ class CreateUserActivity : AppCompatActivity() {
 
     fun createUserBtnClicked(view : View) {
 
+        val userName = createUserNameTxt.text.toString()
         val userEmail = createEmailTxt.text.toString()
         val userPassword = createPasswordTxt.text.toString()
 
@@ -67,13 +69,16 @@ class CreateUserActivity : AppCompatActivity() {
                 AuthService.loginUser(this, userEmail, userPassword) {
                     loginSuccess ->
                     if (loginSuccess) {
+                        AuthService.createUser(this, userName, userEmail, userAvatar, avatarColour) {
+                            createSuccess ->
+                            if (createSuccess) {
+                                Log.d(TAG, "User successfully created")
+                                finish()
+                            }
+                        }
 
                     }
                 }
-
-                Snackbar.make(view, "User registered successfully", Snackbar.LENGTH_LONG)
-            } else {
-                Snackbar.make(view, "User registered failed", Snackbar.LENGTH_LONG)
             }
         }
 
