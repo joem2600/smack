@@ -56,9 +56,21 @@ class CreateUserActivity : AppCompatActivity() {
 
     fun createUserBtnClicked(view : View) {
 
-        AuthService.registerUser(this, "j@jo.com", "123456") {
-            complete ->
-            if (complete) {
+        val userEmail = createEmailTxt.text.toString()
+        val userPassword = createPasswordTxt.text.toString()
+
+
+        AuthService.registerUser(this, userEmail, userPassword) {
+            registerSuccess ->
+            if (registerSuccess) {
+
+                AuthService.loginUser(this, userEmail, userPassword) {
+                    loginSuccess ->
+                    if (loginSuccess) {
+
+                    }
+                }
+
                 Snackbar.make(view, "User registered successfully", Snackbar.LENGTH_LONG)
             } else {
                 Snackbar.make(view, "User registered failed", Snackbar.LENGTH_LONG)
