@@ -58,7 +58,7 @@ object AuthService {
             response ->
             try {
                 Log.d(TAG, response.toString())
-                userEmail = response.getString("user"))
+                userEmail = response.getString("user")
                 authToken = response.getString("token")
                 isLoggedIn = true
                 complete(true)
@@ -122,7 +122,7 @@ object AuthService {
             }
 
             override fun getHeaders(): MutableMap<String, String> {
-                val headers = HashMap
+                val headers = HashMap<String, String>()
                 headers.put("Authorization", "Bearer $authToken")
                 return headers
             }

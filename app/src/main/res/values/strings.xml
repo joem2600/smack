@@ -19,5 +19,6 @@
     <string name="user_name_text">User name</string>
     <string name="tap_to_generate_user_avatar_text">Tap to generate user avatar</string>
     <string name="generate_bg_color_text">Generate background color</string>
+    <string name="logout_text">Logout</string>
 
 </resources>

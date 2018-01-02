@@ -12,7 +12,7 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_create_user.*
 import me.joemacdonald.smack.R
 import me.joemacdonald.smack.Services.AuthService
-import me.joemacdonald.smack.Utilities.BROADCAST_USER_DATA_CHANGE
+import me.joemacdonald.smack.Utilities.*
 import java.util.*
 
 class CreateUserActivity : AppCompatActivity() {
