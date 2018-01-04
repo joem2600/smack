@@ -60,10 +60,10 @@ class MainActivity : AppCompatActivity() {
     fun loginBtnNavClicked(view: View) {
 
         if (AuthService.isLoggedIn) {
-            // Log out
+
             UserDataService.logout()
 
-            userNameNavHeader.text = getString(R.string.login_text)
+            userNameNavHeader.text = ""
             userEmailNavHeader.text = ""
             userImageNavHeader.setImageResource(R.drawable.profiledefault)
             userImageNavHeader.setBackgroundColor(Color.TRANSPARENT)
@@ -73,8 +73,6 @@ class MainActivity : AppCompatActivity() {
             val loginIntent : Intent = Intent(this, LoginActivity::class.java)
             startActivity(loginIntent)
         }
-
-
     }
 
     fun addChannelBtnClicked(view: View) {
