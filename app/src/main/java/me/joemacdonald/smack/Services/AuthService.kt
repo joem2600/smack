@@ -167,7 +167,7 @@ object AuthService {
                 val headers = HashMap<String, String>()
                 headers.put("Authorization", "Bearer $authToken")
                 return headers
-            } 
+            }
         }
 
         Volley.newRequestQueue(context).add(findUserRequest)
