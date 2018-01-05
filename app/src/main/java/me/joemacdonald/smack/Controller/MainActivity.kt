@@ -9,8 +9,11 @@ import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
@@ -75,7 +78,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun hideKeyboard() {
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        if (inputManager.isAcceptingText) {
+            inputManager.hideSoftInputFromWindow(currentFocus.windowToken, 0 )
+        }
+    }
+
+
     fun addChannelBtnClicked(view: View) {
+
+        if (AuthService.isLoggedIn) {
+            val builder = AlertDialog.Builder(this)
+            val dialogView = layoutInflater.inflate(R.layout.add_channel_dialog, null)
+
+            builder.setView(dialogView)
+                    .setPositiveButton("Add") { dialog, which ->
+                        // perform logic when clicked
+                        val nameTxt = dialogView.findViewById<EditText>(R.id.addChannelNameTxt).toString()
+                        val descTxt = dialogView.findViewById<EditText>(R.id.addChannelDescTxt).toString()
+
+                        hideKeyboard()
+
+                    }
+                    .setNegativeButton("Cancel") {dialog, which ->
+                        // cancel and close the dialog
+                        hideKeyboard()
+                    }
+                    .show()
+        }
+
 
     }
 

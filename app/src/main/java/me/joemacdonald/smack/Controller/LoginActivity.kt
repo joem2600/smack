@@ -21,14 +21,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun hideKeyboard() {
-
         val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         if (inputManager.isAcceptingText) {
             inputManager.hideSoftInputFromWindow(currentFocus.windowToken, 0 )
         }
-
-
     }
 
     fun errorToast() {
