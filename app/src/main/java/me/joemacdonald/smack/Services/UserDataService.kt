@@ -1,7 +1,6 @@
-package me.joemacdonald.smack.Utilities
+package me.joemacdonald.smack.Services
 
 import android.graphics.Color
-import me.joemacdonald.smack.Services.AuthService
 import java.util.*
 
 object UserDataService {

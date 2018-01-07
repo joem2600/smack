@@ -11,18 +11,26 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import io.socket.client.IO
+import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
+import me.joemacdonald.smack.Model.Channel
 import me.joemacdonald.smack.R
 import me.joemacdonald.smack.Services.AuthService
+import me.joemacdonald.smack.Services.MessageService
+import me.joemacdonald.smack.Services.UserDataService
 import me.joemacdonald.smack.Utilities.*
 
 
 class MainActivity : AppCompatActivity() {
+
+    val socket = IO.socket(SOCKET_URL)
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -44,12 +52,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        socket.connect()
+        socket.on("channelCreated", onNewChannel)
+
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
+    }
+
+    override fun onResume() {
+
         LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter(BROADCAST_USER_DATA_CHANGE))
+
+        super.onResume()
     }
 
     override fun onBackPressed() {
@@ -58,6 +75,14 @@ class MainActivity : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onDestroy() {
+        socket.disconnect()
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(userDataChangeReceiver)
+
+        super.onDestroy()
     }
 
     fun loginBtnNavClicked(view: View) {
@@ -96,24 +121,41 @@ class MainActivity : AppCompatActivity() {
             builder.setView(dialogView)
                     .setPositiveButton("Add") { dialog, which ->
                         // perform logic when clicked
-                        val nameTxt = dialogView.findViewById<EditText>(R.id.addChannelNameTxt).toString()
-                        val descTxt = dialogView.findViewById<EditText>(R.id.addChannelDescTxt).toString()
+                        val nameTxt = dialogView.findViewById<EditText>(R.id.addChannelNameTxt)
+                        val descTxt = dialogView.findViewById<EditText>(R.id.addChannelDescTxt)
 
-                        hideKeyboard()
+                        val channelName = nameTxt.text.toString()
+                        val channelDesc = descTxt.text.toString()
+
+                        // create channel with channel name and description
+                        socket.emit("newChannel", channelName, channelDesc)
+
 
                     }
                     .setNegativeButton("Cancel") {dialog, which ->
                         // cancel and close the dialog
-                        hideKeyboard()
                     }
                     .show()
         }
+    }
 
+    private val onNewChannel = Emitter.Listener {
+        args ->
+        runOnUiThread {
+            val channelName = args[0] as String
+            val channelDescription = args[1] as String
+            val channelId = args[2] as String
 
+            val newChannel = Channel(channelName, channelDescription, channelId)
+
+            MessageService.channels.add(newChannel)
+            Log.d(TAG, " ${newChannel.id} : ${newChannel.name} : ${newChannel.description}")
+        }
     }
 
     fun sendMsgBtnClicked(view: View) {
 
+        hideKeyboard()
     }
 
 }
