@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import io.socket.client.IO
 import io.socket.emitter.Emitter
@@ -31,9 +32,16 @@ import me.joemacdonald.smack.Utilities.*
 class MainActivity : AppCompatActivity() {
 
     val socket = IO.socket(SOCKET_URL)
+    lateinit var channelAdapter: ArrayAdapter<Channel>
+
+    private fun setupAdapters() {
+
+        channelAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, MessageService.channels)
+        channel_list.adapter = channelAdapter
+    }
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
+        override fun onReceive(context: Context, intent: Intent?) {
 
             if (AuthService.isLoggedIn) {
                 userNameNavHeader.text = UserDataService.name
@@ -42,6 +50,14 @@ class MainActivity : AppCompatActivity() {
                 userImageNavHeader.setImageResource(resourceId)
                 userImageNavHeader.setBackgroundColor(UserDataService.returnAvatarColor(UserDataService.avatarColor))
                 loginBtnNavHeader.text = getString(R.string.logout_text)
+
+                MessageService.getChannels(context) {
+                    complete ->
+                    if (complete) {
+                        channelAdapter.notifyDataSetChanged()
+                    }
+
+                }
             }
 
         } // onReceive()
@@ -59,6 +75,8 @@ class MainActivity : AppCompatActivity() {
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
+
+        setupAdapters()
 
     }
 
