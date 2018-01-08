@@ -16,7 +16,7 @@ object MessageService {
     val channels = ArrayList<Channel>()
 
 
-    fun getChannels(context: Context, complete: (Boolean) -> Unit) {
+    fun getChannels(complete: (Boolean) -> Unit) {
 
         val channelsRequest = object : JsonArrayRequest(Method.GET, URL_GET_CHANNELS, null, Response.Listener {
             response ->
@@ -41,7 +41,7 @@ object MessageService {
             }
 
         }, Response.ErrorListener {
-            error ->
+            _ ->
             Log.d(TAG, "Could not retreive channels")
             complete(false)
         }) {
@@ -55,7 +55,7 @@ object MessageService {
                 return headers
             }
         }
-        Volley.newRequestQueue(context).add(channelsRequest)
+        App.prefs.requestQueue.add(channelsRequest)
     }
 
 }

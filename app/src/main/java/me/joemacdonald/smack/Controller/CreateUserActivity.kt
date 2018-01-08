@@ -87,14 +87,14 @@ class CreateUserActivity : AppCompatActivity() {
         val userPassword = createPasswordTxt.text.toString()
 
         if (userName.isNotEmpty() && userEmail.isNotEmpty() && userPassword.isNotEmpty()) {
-            AuthService.registerUser(this, userEmail, userPassword) {
+            AuthService.registerUser( userEmail, userPassword) {
                 registerSuccess ->
                 if (registerSuccess) {
 
-                    AuthService.loginUser(this, userEmail, userPassword) {
+                    AuthService.loginUser( userEmail, userPassword) {
                         loginSuccess ->
                         if (loginSuccess) {
-                            AuthService.createUser(this, userName, userEmail, userAvatar, avatarColour) {
+                            AuthService.createUser( userName, userEmail, userAvatar, avatarColour) {
                                 createSuccess ->
                                 if (createSuccess) {
 

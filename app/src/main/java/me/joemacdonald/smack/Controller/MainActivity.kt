@@ -20,6 +20,7 @@ import io.socket.client.IO
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import me.joemacdonald.smack.Model.Channel
 import me.joemacdonald.smack.R
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     val socket = IO.socket(SOCKET_URL)
     lateinit var channelAdapter: ArrayAdapter<Channel>
+    var selectedChannel : Channel? = null
 
     private fun setupAdapters() {
 
@@ -47,14 +49,19 @@ class MainActivity : AppCompatActivity() {
                 userNameNavHeader.text = UserDataService.name
                 userEmailNavHeader.text = UserDataService.email
                 val resourceId = resources.getIdentifier(UserDataService.avatarName, "drawable", packageName)
+
                 userImageNavHeader.setImageResource(resourceId)
                 userImageNavHeader.setBackgroundColor(UserDataService.returnAvatarColor(UserDataService.avatarColor))
                 loginBtnNavHeader.text = getString(R.string.logout_text)
 
-                MessageService.getChannels(context) {
+                MessageService.getChannels() {
                     complete ->
                     if (complete) {
-                        channelAdapter.notifyDataSetChanged()
+                        if (MessageService.channels.count() > 0 ) {
+                            selectedChannel = MessageService.channels[0]
+                            channelAdapter.notifyDataSetChanged()
+                            updateWithChannel()
+                        }
                     }
 
                 }
@@ -62,6 +69,12 @@ class MainActivity : AppCompatActivity() {
 
         } // onReceive()
     } // userDataCangeReceiver
+
+    fun updateWithChannel() {
+
+        mainChannelName.text = "#${selectedChannel?.name}"
+        // Download messages for channel
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +90,12 @@ class MainActivity : AppCompatActivity() {
         toggle.syncState()
 
         setupAdapters()
+
+        channel_list.setOnItemClickListener { _, _, position, _ ->
+            selectedChannel = MessageService.channels[position]
+            drawer_layout.closeDrawer(GravityCompat.START)
+            updateWithChannel()
+        }
 
         if (App.prefs.isLoggedIn) {
             AuthService.findUserByEmail(this) {}
@@ -107,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    fun loginBtnNavClicked(view: View) {
+    fun loginBtnNavClicked( ) {
 
         if (App.prefs.isLoggedIn) {
 
@@ -134,14 +153,14 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun addChannelBtnClicked(view: View) {
+    fun addChannelBtnClicked( ) {
 
         if (App.prefs.isLoggedIn) {
             val builder = AlertDialog.Builder(this)
             val dialogView = layoutInflater.inflate(R.layout.add_channel_dialog, null)
 
             builder.setView(dialogView)
-                    .setPositiveButton("Add") { dialog, which ->
+                    .setPositiveButton("Add") { _, _ ->
                         // perform logic when clicked
                         val nameTxt = dialogView.findViewById<EditText>(R.id.addChannelNameTxt)
                         val descTxt = dialogView.findViewById<EditText>(R.id.addChannelDescTxt)
@@ -154,7 +173,7 @@ class MainActivity : AppCompatActivity() {
 
 
                     }
-                    .setNegativeButton("Cancel") {dialog, which ->
+                    .setNegativeButton("Cancel") { _, _ ->
                         // cancel and close the dialog
                     }
                     .show()
@@ -175,7 +194,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun sendMsgBtnClicked(view: View) {
+    fun sendMsgBtnClicked( view: View) {
 
         hideKeyboard()
     }
