@@ -6,7 +6,6 @@ import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import me.joemacdonald.smack.Utilities.*
 import org.json.JSONObject
 import com.android.volley.DefaultRetryPolicy
